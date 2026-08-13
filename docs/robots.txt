@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tiru67.github.io/scoutly-price-scout-privacy/sitemap.xml
