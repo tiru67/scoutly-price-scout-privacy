@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Scoutly Price Scout",
+  "version": "0.1.1",
+  "description": "See a product's detected price and check trusted shopping sources before you buy.",
+  "permissions": ["storage", "activeTab", "scripting", "alarms"],
+  "action": {
+    "default_title": "Scoutly Price Scout",
+    "default_popup": "popup.html",
+    "default_icon": { "128": "icons/scoutly-128.png" }
+  },
+  "icons": { "128": "icons/scoutly-128.png" },
+  "background": { "service_worker": "background.js" }
+}

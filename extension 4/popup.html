@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scoutly Price Scout</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main>
+    <header><div class="brand"><span>✦</span> scoutly</div><span class="eyebrow">PRICE SCOUT</span></header>
+    <section id="empty" class="empty hidden"><div class="empty-mark">⌕</div><h1>Shop with confidence.</h1><p>Open a product page and Scoutly will detect the item so you can check other trusted shopping sources.</p></section>
+    <section id="product" class="hidden">
+      <div class="eyebrow">DETECTED PRODUCT</div>
+      <h1 id="title">—</h1>
+      <div class="price-row"><strong id="price">Price not detected</strong><span id="site">—</span></div>
+      <div class="notice"><span>✦</span><p>Scoutly found the product. Compare the final total, delivery, seller, and warranty before buying.</p></div>
+      <div class="actions"><button id="google" class="primary">Check Google Shopping ↗</button><button id="bing" class="secondary">Check Bing Shopping ↗</button></div>
+      <button id="watch" class="watch">♡ Watch this price</button>
+      <p id="watchStatus" class="watch-status"></p>
+    </section>
+    <footer>Scoutly never changes checkout links or silently applies affiliate tracking.</footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
