@@ -3,40 +3,214 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Scoutly — Smarter shopping in India</title>
-  <meta name="description" content="Scoutly helps Indian shoppers compare product identity, seller, warranty and final price before buying.">
+  <title>Scoutly India — Compare exact products and verified prices</title>
+  <meta name="description" content="Find products by category or budget, compare exact models, and verify live retailer prices before buying in India.">
   <link rel="canonical" href="https://scoutly-price-scout.vercel.app/">
-  <link rel="stylesheet" href="style.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Scoutly">
+  <meta property="og:title" content="Scoutly — Buy with evidence">
+  <meta property="og:description" content="India-focused shopping research: exact products, checked prices and transparent buying advice.">
+  <meta property="og:url" content="https://scoutly-price-scout.vercel.app/">
+  <meta property="og:image" content="https://scoutly-price-scout.vercel.app/assets/scoutly-social.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Scoutly — Buy with evidence">
+  <meta name="twitter:description" content="India-focused shopping research with exact products and checked prices.">
+  <meta name="twitter:image" content="https://scoutly-price-scout.vercel.app/assets/scoutly-social.png">
+  <link rel="stylesheet" href="/style.css">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@graph":[
+      {
+        "@type":"Organization",
+        "@id":"https://scoutly-price-scout.vercel.app/#organization",
+        "name":"Scoutly",
+        "url":"https://scoutly-price-scout.vercel.app/",
+        "email":"t.freedom67@gmail.com"
+      },
+      {
+        "@type":"WebSite",
+        "@id":"https://scoutly-price-scout.vercel.app/#website",
+        "url":"https://scoutly-price-scout.vercel.app/",
+        "name":"Scoutly",
+        "publisher":{"@id":"https://scoutly-price-scout.vercel.app/#organization"},
+        "inLanguage":"en-IN",
+        "potentialAction":{
+          "@type":"SearchAction",
+          "target":{"@type":"EntryPoint","urlTemplate":"https://scoutly-price-scout.vercel.app/?q={search_term_string}#checked-products"},
+          "query-input":"required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
+  <script src="/site.js" defer></script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-  <header><a class="brand" href="index.html"><span>✦</span> scoutly</a><nav><a href="guides/">Product guides</a><a href="about.html">About</a><a href="privacy-policy.html">Privacy</a></nav></header>
-  <main>
-    <section class="hero">
-      <p class="eyebrow">SHOPPING RESEARCH FOR INDIA</p>
-      <h1>Buy with evidence,<br><em>not guesswork.</em></h1>
-      <p>Scoutly publishes practical buying guides that help you compare product identity, total price, seller quality, warranty, and timing before you order.</p>
-      <p><a class="button" href="guides/">Browse product guides →</a></p>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header>
+    <a class="brand" href="/"><span>✦</span> scoutly</a>
+    <nav aria-label="Primary navigation">
+      <a href="/guides/boat-audio-deals-under-1100-india.html">Deals</a>
+      <a href="/guides/">Guides</a>
+      <a href="/methodology.html">How we verify</a>
+      <a class="saved-link" href="#saved">Saved <span class="saved-count" data-saved-count>0</span></a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="home-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">LIVE SHOPPING RESEARCH FOR INDIA</p>
+        <h1>Find the right product. <em>Verify the real price.</em></h1>
+        <p>Scoutly matches exact models, checks current retailer evidence and explains the trade-offs before you leave to buy.</p>
+        <div class="hero-actions">
+          <a class="button" href="#checked-products">See recently checked products</a>
+          <a class="button-secondary" href="/methodology.html">Read our verification method</a>
+        </div>
+      </div>
+
+      <form class="search-panel" data-search-form role="search" aria-label="Search Scoutly recommendations">
+        <p class="eyebrow">WHAT ARE YOU SHOPPING FOR?</p>
+        <h2>Start with a need or a budget</h2>
+        <p>Search the products and guides Scoutly has actually researched.</p>
+        <div class="search-row">
+          <label class="visually-hidden" for="product-search">Search products and guides</label>
+          <input id="product-search" data-search-input type="search" name="q" placeholder="Search headphones, routers, power banks…" autocomplete="off">
+          <button class="button" type="submit">Find</button>
+        </div>
+        <p class="search-hint">Results update below. Scoutly does not invent unverified offers.</p>
+        <div class="filter-group">
+          <p class="filter-label">Category</p>
+          <div class="chips" aria-label="Filter by category">
+            <button class="chip" type="button" data-filter-category="all" aria-pressed="true">All</button>
+            <button class="chip" type="button" data-filter-category="audio" aria-pressed="false">Audio</button>
+            <button class="chip" type="button" data-filter-category="power" aria-pressed="false">Power</button>
+            <button class="chip" type="button" data-filter-category="home-tech" aria-pressed="false">Home tech</button>
+            <button class="chip" type="button" data-filter-category="computing" aria-pressed="false">Computing</button>
+            <button class="chip" type="button" data-filter-category="fitness" aria-pressed="false">Fitness</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <p class="filter-label">Maximum budget</p>
+          <div class="chips" aria-label="Filter by maximum budget">
+            <button class="chip" type="button" data-filter-budget="500" aria-pressed="false">₹500</button>
+            <button class="chip" type="button" data-filter-budget="1000" aria-pressed="false">₹1,000</button>
+            <button class="chip" type="button" data-filter-budget="2000" aria-pressed="false">₹2,000</button>
+            <button class="chip" type="button" data-filter-budget="5000" aria-pressed="false">₹5,000</button>
+          </div>
+        </div>
+      </form>
     </section>
-    <section class="featured">
-      <div class="section-head"><div><p class="eyebrow">LIVE PRICE CHECK · 14 AUGUST</p><h2>Three real audio deals, stale listings removed</h2></div></div>
-      <article>
-        <p class="tag">BOAT AUDIO · ₹349–₹1,099</p>
-        <h3><a href="guides/boat-audio-deals-under-1100-india.html">3 verified boAt audio deals under ₹1,100</a></h3>
-        <p>Exact models, selected variants, official-store prices and working EarnKaro links—checked before publication.</p>
-        <a class="text-link" href="guides/boat-audio-deals-under-1100-india.html">See the live shortlist →</a>
-      </article>
+
+    <section class="trust-strip" aria-label="Scoutly research principles">
+      <div><strong>Exact product matches</strong><span>Model, variant and connection type</span></div>
+      <div><strong>Current price evidence</strong><span>Retailer page checked before publishing</span></div>
+      <div><strong>Transparent links</strong><span>Affiliate relationships disclosed</span></div>
+      <div><strong>Checked 14 Aug 2026</strong><span>11:13 AM IST · prices may change</span></div>
     </section>
-    <section>
-      <div class="section-head"><div><p class="eyebrow">LATEST GUIDES</p><h2>Research before you buy</h2></div><a class="text-link" href="guides/">See all guides →</a></div>
+
+    <section aria-labelledby="shopping-tasks">
+      <div class="section-head">
+        <div><p class="eyebrow">SHOP BY DECISION</p><h2 id="shopping-tasks">What are you trying to solve?</h2></div>
+      </div>
+      <div class="task-grid">
+        <a class="task-card" href="/?category=audio#checked-products"><span class="task-icon">◉</span><h3>Replace everyday earphones</h3><p>Compare wired, true-wireless and neckband options by use—not marketing claims.</p></a>
+        <a class="task-card" href="/guides/ambrane-charge-r65-65w-gan-charger-india.html"><span class="task-icon">ϟ</span><h3>Charge a laptop and phone</h3><p>Check protocol support, port sharing and the wattage your devices can accept.</p></a>
+        <a class="task-card" href="/guides/best-wifi-routers-for-home-india.html"><span class="task-icon">⌁</span><h3>Improve home Wi‑Fi</h3><p>Match speed, coverage and device load before choosing a router tier.</p></a>
+        <a class="task-card" href="mailto:t.freedom67@gmail.com?subject=Scoutly%20comparison%20request"><span class="task-icon">＋</span><h3>Request a comparison</h3><p>Send the product or category you want Scoutly to research next.</p></a>
+      </div>
+    </section>
+
+    <section id="checked-products" aria-labelledby="checked-title">
+      <div class="section-head">
+        <div><p class="eyebrow">RECENTLY CHECKED</p><h2 id="checked-title">Three products with live retailer evidence</h2></div>
+        <a class="text-link" href="/guides/boat-audio-deals-under-1100-india.html">Open full comparison →</a>
+      </div>
+      <div class="catalog-toolbar">
+        <span class="result-status" data-result-status aria-live="polite">3 useful results</span>
+        <span class="updated">Official boAt store · 14 Aug, 11:13 AM IST</span>
+      </div>
+      <div class="catalog-grid">
+        <article class="catalog-card" data-discovery-item data-category="audio" data-price="799" data-search="boat airdopes alpha earbuds tws wireless calls audio under 1000">
+          <div class="catalog-card__media"><img src="/assets/boat-airdopes-alpha.png" width="500" height="500" alt="Black boAt Airdopes Alpha true wireless earbuds and charging case"></div>
+          <div class="catalog-card__body">
+            <p class="tag">BEST VALUE · TRUE WIRELESS</p>
+            <h3><a href="/guides/boat-audio-deals-under-1100-india.html#airdopes-alpha">boAt Airdopes Alpha</a></h3>
+            <p>35-hour claimed total playback, fast charging and an easy entry price.</p>
+            <div class="price-line"><strong>₹799</strong><span>CHECKED PRICE</span></div>
+            <div class="card-actions">
+              <a class="mini-cta" href="/guides/boat-audio-deals-under-1100-india.html#airdopes-alpha">See evidence</a>
+              <button class="watch-button" type="button" data-watch-id="boat-airdopes-alpha" data-watch-title="boAt Airdopes Alpha" data-watch-price="₹799" data-watch-url="/guides/boat-audio-deals-under-1100-india.html#airdopes-alpha" aria-pressed="false">Track this price</button>
+            </div>
+            <p class="official-image-note">Product image: official boAt listing.</p>
+          </div>
+        </article>
+
+        <article class="catalog-card" data-discovery-item data-category="audio fitness" data-price="1099" data-search="boat rockerz 255 pro plus neckband wireless sports workout battery audio under 2000">
+          <div class="catalog-card__media"><img src="/assets/boat-rockerz-255-pro-plus.png" width="700" height="700" alt="Black boAt Rockerz 255 Pro Plus wireless neckband earphones"></div>
+          <div class="catalog-card__body">
+            <p class="tag">LONG PLAYBACK · NECKBAND</p>
+            <h3><a href="/guides/boat-audio-deals-under-1100-india.html#rockerz-255-pro-plus">boAt Rockerz 255 Pro+</a></h3>
+            <p>Up to 60 hours claimed playback, IPX7 resistance and dual pairing.</p>
+            <div class="price-line"><strong>₹1,099</strong><span>CHECKED PRICE</span></div>
+            <div class="card-actions">
+              <a class="mini-cta" href="/guides/boat-audio-deals-under-1100-india.html#rockerz-255-pro-plus">See evidence</a>
+              <button class="watch-button" type="button" data-watch-id="boat-rockerz-255-pro-plus" data-watch-title="boAt Rockerz 255 Pro+" data-watch-price="₹1,099" data-watch-url="/guides/boat-audio-deals-under-1100-india.html#rockerz-255-pro-plus" aria-pressed="false">Track this price</button>
+            </div>
+            <p class="official-image-note">Product image: official boAt listing.</p>
+          </div>
+        </article>
+
+        <article class="catalog-card" data-discovery-item data-category="audio" data-price="349" data-search="boat bassheads 104 wired earphones 3.5 mm headphone jack audio under 500">
+          <div class="catalog-card__media"><img src="/assets/boat-bassheads-104.png" width="600" height="600" alt="Black boAt BassHeads 104 wired in-ear earphones"></div>
+          <div class="catalog-card__body">
+            <p class="tag">LOWEST COST · WIRED</p>
+            <h3><a href="/guides/boat-audio-deals-under-1100-india.html#bassheads-104">boAt BassHeads 104</a></h3>
+            <p>No charging required; for devices with a compatible 3.5 mm audio jack.</p>
+            <div class="price-line"><strong>₹349</strong><span>CHECKED PRICE</span></div>
+            <div class="card-actions">
+              <a class="mini-cta" href="/guides/boat-audio-deals-under-1100-india.html#bassheads-104">See evidence</a>
+              <button class="watch-button" type="button" data-watch-id="boat-bassheads-104" data-watch-title="boAt BassHeads 104" data-watch-price="₹349" data-watch-url="/guides/boat-audio-deals-under-1100-india.html#bassheads-104" aria-pressed="false">Track this price</button>
+            </div>
+            <p class="official-image-note">Product image: official boAt listing.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="popular-title">
+      <div class="section-head"><div><p class="eyebrow">POPULAR COMPARISONS</p><h2 id="popular-title">Continue the research</h2></div><a class="text-link" href="/guides/">See all guides →</a></div>
       <div class="grid">
-        <article><p class="tag">65W GAN CHARGER · INDIA</p><h3><a href="guides/ambrane-charge-r65-65w-gan-charger-india.html">Ambrane Charge R65: should you buy it?</a></h3><p>Exact model identity, compatibility, power allocation and a useful buying threshold.</p></article>
-        <article><p class="tag">PRICE LITERACY</p><h3><a href="posts/how-to-compare-final-price.html">How to compare the real final price online</a></h3><p>Item price is only one part of a purchase. Here is a simple way to compare total cost.</p></article>
-        <article><p class="tag">HOME TECH</p><h3><a href="posts/buying-wifi-router.html">What to check before buying a Wi‑Fi router</a></h3><p>Match the router to your connection, home size, devices, and support expectations.</p></article>
-        <article><p class="tag">POWER</p><h3><a href="posts/choosing-power-bank.html">Choosing a power bank without overpaying</a></h3><p>Compare capacity, output, charging protocols, safety, and the weight you will carry.</p></article>
-        <article><p class="tag">SMART SHOPPING</p><h3><a href="posts/same-product-variants.html">Same product or similar product?</a></h3><p>Model numbers, pack counts, sizes, colours, and seller details prevent bad comparisons.</p></article>
+        <article data-discovery-item data-category="power computing" data-price-max="5000" data-search="ambrane charge r65 65w gan charger laptop phone usb c power"><p class="tag">65W GAN CHARGER</p><h3><a href="/guides/ambrane-charge-r65-65w-gan-charger-india.html">Ambrane Charge R65: exact-model verdict</a></h3><p>Compatibility, port sharing, power allocation and the price at which it makes sense.</p></article>
+        <article data-discovery-item data-category="power" data-price-max="2000" data-search="best power banks under 2000 battery charger travel"><p class="tag">POWER · UNDER ₹2,000</p><h3><a href="/guides/best-power-banks-under-2000-india.html">How to shortlist a power bank</a></h3><p>Usable capacity, output protocols, safety and the weight you will carry.</p></article>
+        <article data-discovery-item data-category="home-tech computing" data-price-max="5000" data-search="wifi router home internet network broadband computing"><p class="tag">HOME TECH</p><h3><a href="/guides/best-wifi-routers-for-home-india.html">Choose a Wi‑Fi router for your home</a></h3><p>Match the router to your broadband plan, floor plan, devices and support needs.</p></article>
+      </div>
+    </section>
+
+    <section class="saved-section" id="saved" aria-labelledby="saved-title">
+      <p class="eyebrow">YOUR SHORTLIST</p>
+      <h2 id="saved-title">Saved on this device</h2>
+      <p>Save a checked product so you can return and verify the current retailer total. This local shortlist is not an automatic price-alert service yet.</p>
+      <div class="saved-items" data-saved-items></div>
+    </section>
+
+    <section class="section-head" aria-labelledby="extension-title">
+      <div>
+        <p class="eyebrow">SCOUTLY EXTENSION BETA</p>
+        <h2 id="extension-title">Bring exact-product checks to the shopping page</h2>
+        <p class="lede">The browser extension is being improved to identify the product first, then return source-backed offers—not just open a generic search.</p>
+        <a class="button" href="mailto:t.freedom67@gmail.com?subject=Join%20Scoutly%20extension%20beta">Join the extension beta</a>
       </div>
     </section>
   </main>
-  <footer>© 2026 Scoutly · <a href="privacy-policy.html">Privacy policy</a> · Contact: t.freedom67@gmail.com</footer>
+
+  <footer>
+    <span>© 2026 Scoutly · Independent shopping research for India</span>
+    <span class="footer-links"><a href="/guides/">Guides</a><a href="/methodology.html">Methodology</a><a href="/about.html">About</a><a href="/privacy-policy.html">Privacy</a><a href="mailto:t.freedom67@gmail.com">Contact</a></span>
+  </footer>
 </body>
 </html>
