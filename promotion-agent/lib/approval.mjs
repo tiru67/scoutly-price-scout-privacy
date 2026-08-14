@@ -57,7 +57,7 @@ export async function approveCampaign(slug, platforms) {
     ...current,
     slug,
     publishApproved: true,
-    approvedPlatforms: platforms || ['x', 'linkedin', 'community', 'shortvideo', 'newsletter'],
+    approvedPlatforms: platforms || ['x'],
     approvedAt: new Date().toISOString(),
     approvedBy: 'user-explicit-approval',
     updatedAt: new Date().toISOString(),
