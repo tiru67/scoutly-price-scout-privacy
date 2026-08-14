@@ -95,12 +95,16 @@ export async function checkXConnection() {
     });
     const result = await parseResponse(response);
     if (!result.ok) {
+      const unauthorized = result.status === 401;
       return {
         connected: false,
         credentials,
         mode: 'oauth_user_context',
         status: result.status,
         error: result.payload?.detail || result.payload?.title || 'OAuth user-context check failed',
+        action: unauthorized
+          ? 'Re-copy X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, and X_ACCESS_TOKEN_SECRET from the same app Keys and tokens page after setting Read and write permissions and regenerating Access Token and Secret.'
+          : undefined,
         payload: result.payload
       };
     }
