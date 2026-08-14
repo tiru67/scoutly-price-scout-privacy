@@ -53,6 +53,11 @@ account is still in the sandbox, and provide the SES Region plus the contact-lis
 name/ID. SES requires a verified identity before sending; sandbox accounts can send
 only to verified recipients.
 
+For the local Codex marketing agent, keep X credentials in `.env.local` on your
+computer. That file is ignored by Git. Load it into the local automation process;
+never commit it, paste it into chat, or expose it to browser/frontend code. The
+required variable names are documented in `.env.example`.
+
 The first email campaign should remain limited to one useful email per week until ROI, bounce rate, unsubscribe rate, and conversion attribution are verified.
 
 ## 4. Add publishing accounts one at a time
