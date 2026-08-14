@@ -102,10 +102,11 @@ export async function canPublishPlatform(platform, date = todayKey()) {
   return count < max;
 }
 
-export async function logPublish(entry) {
+export async function logPublish(entry, { countTowardDailyLimit = true } = {}) {
   await mkdir(join(approvalsDir, '..', 'published'), { recursive: true });
   const line = `${JSON.stringify({ ...entry, at: new Date().toISOString() })}\n`;
   await appendFile(publishLog, line, 'utf8');
+  if (!countTowardDailyLimit || entry.status !== 'posted') return;
   const limits = await readDailyLimits();
   const date = todayKey();
   limits[date] = limits[date] || {};
@@ -154,7 +155,7 @@ export async function publishToPlatform({ slug, platform = ACTIVE_PLATFORM, post
       entry.error = error.message;
       entry.errorStatus = error.status || null;
       entry.errorPayload = error.payload || null;
-      await logPublish(entry);
+      await logPublish(entry, { countTowardDailyLimit: false });
       throw error;
     }
   }
