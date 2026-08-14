@@ -94,21 +94,23 @@ export async function checkXConnection() {
       headers: { Authorization: oauth1Authorization({ method: 'GET', url: VERIFY_URL }) }
     });
     const result = await parseResponse(response);
-    if (result.ok) {
+    if (!result.ok) {
       return {
-        connected: true,
+        connected: false,
         credentials,
         mode: 'oauth_user_context',
-        user: result.payload?.data || null
+        status: result.status,
+        error: result.payload?.detail || result.payload?.title || 'OAuth user-context check failed',
+        payload: result.payload
       };
     }
+
     return {
-      connected: false,
+      connected: true,
       credentials,
       mode: 'oauth_user_context',
-      status: result.status,
-      error: result.payload?.detail || result.payload?.title || 'OAuth user-context check failed',
-      payload: result.payload
+      user: result.payload?.data || null,
+      note: 'OAuth user context verified. Live posting is attempted only during publish and requires Read and write app permissions with regenerated access tokens.'
     };
   }
 
@@ -161,7 +163,10 @@ export async function postTweet(text) {
       || result.payload?.title
       || result.payload?.errors?.[0]?.message
       || `X API returned ${result.status}`;
-    const error = new Error(message);
+    const hint = result.status === 403 && result.payload?.type?.includes('oauth1-permissions')
+      ? ' Set app permissions to Read and write in the X Developer Portal, then regenerate Access Token and Secret.'
+      : '';
+    const error = new Error(`${message}${hint}`);
     error.status = result.status;
     error.payload = result.payload;
     throw error;
