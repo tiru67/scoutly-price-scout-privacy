@@ -9,6 +9,7 @@ When working on promotion tasks:
 5. Never invent live prices, product claims, testing results, rankings, or availability.
 6. Keep affiliate disclosures close to affiliate links.
 7. Use UTM links and review exported metrics with `node promotion-agent/cli.mjs review`.
-8. Run `node --check promotion-agent/cli.mjs` and `git diff --check` after changes.
+8. Run the analytics iteration loop with `node promotion-agent/run-analytics.mjs iterate`.
+9. Run `node --check promotion-agent/cli.mjs` and `git diff --check` after changes.
 
 The primary objective is qualified traffic and attributable conversions, not maximum posting volume.

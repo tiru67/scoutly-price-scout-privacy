@@ -3,6 +3,17 @@
 
   var WATCH_KEY = 'scoutly:watches:v1';
   var ANALYTICS_KEY = 'scoutly:analytics-opt-out';
+  var ATTRIBUTION_KEY = 'scoutly:attribution:v1';
+  var SESSION_KEY = 'scoutly:session:v1';
+  var EVENT_QUEUE_KEY = 'scoutly:event-queue:v1';
+  var ANALYTICS_ENDPOINT = (function () {
+    var meta = document.querySelector('meta[name="scoutly-analytics-endpoint"]');
+    if (meta && meta.content) return meta.content;
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://127.0.0.1:4173/api/analytics/events';
+    }
+    return '';
+  })();
 
   window.va = window.va || function () {
     (window.vaq = window.vaq || []).push(arguments);
@@ -10,6 +21,157 @@
   window.va('beforeSend', function (event) {
     return localStorage.getItem(ANALYTICS_KEY) === '1' ? null : event;
   });
+
+  function analyticsDisabled() {
+    return localStorage.getItem(ANALYTICS_KEY) === '1';
+  }
+
+  function sessionId() {
+    try {
+      var existing = sessionStorage.getItem(SESSION_KEY);
+      if (existing) return existing;
+      var next = 'sess_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      sessionStorage.setItem(SESSION_KEY, next);
+      return next;
+    } catch (error) {
+      return 'sess_fallback';
+    }
+  }
+
+  function readAttribution() {
+    try {
+      return JSON.parse(sessionStorage.getItem(ATTRIBUTION_KEY) || '{}');
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function captureAttribution() {
+    var params = new URLSearchParams(window.location.search);
+    var current = readAttribution();
+    var next = {
+      utm_source: params.get('utm_source') || current.utm_source || null,
+      utm_medium: params.get('utm_medium') || current.utm_medium || null,
+      utm_campaign: params.get('utm_campaign') || current.utm_campaign || null,
+      utm_content: params.get('utm_content') || current.utm_content || null,
+      referrer: document.referrer || current.referrer || null
+    };
+    try { sessionStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(next)); } catch (error) { /* ignore */ }
+    return next;
+  }
+
+  function pageType() {
+    var path = window.location.pathname;
+    if (path.indexOf('/guides/') === 0) return 'guide';
+    if (path.indexOf('/go/') === 0) return 'outbound';
+    if (path.indexOf('/posts/') === 0) return 'post';
+    if (path === '/' || path === '/index.html') return 'home';
+    return 'page';
+  }
+
+  function readEventQueue() {
+    try {
+      var value = JSON.parse(localStorage.getItem(EVENT_QUEUE_KEY) || '[]');
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function writeEventQueue(items) {
+    try { localStorage.setItem(EVENT_QUEUE_KEY, JSON.stringify(items.slice(-200))); } catch (error) { /* ignore */ }
+  }
+
+  function trackEvent(name, props) {
+    if (analyticsDisabled()) return;
+    var attribution = captureAttribution();
+    var payload = {
+      name: name,
+      at: new Date().toISOString(),
+      path: window.location.pathname,
+      pageType: pageType(),
+      sessionId: sessionId(),
+      utm_source: attribution.utm_source,
+      utm_medium: attribution.utm_medium,
+      utm_campaign: attribution.utm_campaign,
+      utm_content: attribution.utm_content,
+      referrer: attribution.referrer,
+      meta: props || {}
+    };
+    if (props && props.ctaId) payload.ctaId = props.ctaId;
+    if (props && props.destination) payload.destination = props.destination;
+
+    try { window.va('event', name, payload.meta); } catch (error) { /* optional */ }
+
+    if (navigator.sendBeacon && ANALYTICS_ENDPOINT) {
+      try {
+        var blob = new Blob([body], { type: 'application/json' });
+        if (navigator.sendBeacon(ANALYTICS_ENDPOINT, blob)) return;
+      } catch (error) { /* fall through */ }
+    }
+
+    var queue = readEventQueue();
+    queue.push(payload);
+    writeEventQueue(queue);
+    if (window.fetch && ANALYTICS_ENDPOINT) {
+      fetch(ANALYTICS_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+    }
+  }
+
+  function ctaIdFromLink(link) {
+    if (link.dataset.watchId) return link.dataset.watchId;
+    if (link.hash) return link.hash.replace(/^#/, '');
+    var href = link.getAttribute('href') || '';
+    if (href.indexOf('/go/') >= 0) return href.split('/').pop().replace('.html', '');
+    if (href.indexOf('amazon.in') >= 0) return 'amazon';
+    return href || 'cta';
+  }
+
+  function isAffiliateLink(link) {
+    var href = link.getAttribute('href') || '';
+    return link.classList.contains('cta')
+      || link.classList.contains('mini-cta')
+      || href.indexOf('/go/') === 0
+      || (href.indexOf('amazon.in') >= 0 && href.indexOf('tag=') >= 0)
+      || link.getAttribute('rel') === 'nofollow sponsored';
+  }
+
+  function setupFunnelTracking() {
+    var engaged = false;
+    var pageStart = Date.now();
+    trackEvent('page_view', { title: document.title });
+
+    function markEngaged(reason) {
+      if (engaged) return;
+      engaged = true;
+      trackEvent('engaged', { reason: reason, dwell_ms: Date.now() - pageStart });
+    }
+
+    window.setTimeout(function () { markEngaged('dwell_20s'); }, 20000);
+    window.addEventListener('scroll', function () {
+      var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      var ratio = window.scrollY / scrollable;
+      if (ratio >= 0.5) markEngaged('scroll_50');
+    }, { passive: true });
+
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('a');
+      if (!link || !isAffiliateLink(link)) return;
+      var destination = link.getAttribute('href') || '';
+      var ctaId = ctaIdFromLink(link);
+      trackEvent('cta_click', { ctaId: ctaId, destination: destination });
+      if (destination.indexOf('/go/') === 0 || destination.indexOf('amazon.in') >= 0) {
+        trackEvent('affiliate_outbound', { ctaId: ctaId, destination: destination });
+      }
+    }, true);
+  }
+
+  function exportQueuedEvents() {
+    return readEventQueue();
+  }
+
+  window.scoutlyExportAnalytics = exportQueuedEvents;
 
   function readWatches() {
     try {
@@ -75,6 +237,7 @@
         price: button.dataset.watchPrice || 'price not set',
         url: button.dataset.watchUrl || window.location.pathname
       });
+      trackEvent('watch_save', { watchId: id, title: button.dataset.watchTitle || id });
     }
 
     saveWatches(watches);
@@ -169,6 +332,7 @@
   function setupOutboundRedirect() {
     var url = document.body.dataset.outboundUrl;
     if (!url) return;
+    trackEvent('affiliate_outbound', { ctaId: window.location.pathname.split('/').pop(), destination: url });
     window.setTimeout(function () { window.location.replace(url); }, 650);
   }
 
@@ -185,6 +349,8 @@
   });
 
   document.addEventListener('DOMContentLoaded', function () {
+    captureAttribution();
+    setupFunnelTracking();
     setupDiscovery();
     setupAnalyticsControl();
     updateWatchUi();

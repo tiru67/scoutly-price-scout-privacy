@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { amazonConnected, searchAmazon } from './amazon-creators.mjs';
+import { handleAnalyticsRoute } from './lib/analytics-api.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const port = Number(process.env.PORT || 4173);
@@ -55,6 +56,7 @@ async function compare(url, res) {
 }
 async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
+  if (await handleAnalyticsRoute(req, res, url, json)) return;
   if (url.pathname === '/api/status') return json(res, 200, { ready:Object.values(sources).every(source=>source.connected), sources });
   if (url.pathname === '/api/opportunities') return opportunities(url, res);
   if (url.pathname === '/api/compare') return compare(url, res);
