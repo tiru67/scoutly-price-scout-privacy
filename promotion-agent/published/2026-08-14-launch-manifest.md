@@ -1,60 +1,40 @@
-# Launch manifest — 2026-08-14
+# Launch manifest — 2026-08-14 (X only)
 
-**Status:** Approved and queued for manual publish (no social API connected).
+**Status:** Approved. X is the only active publishing channel.
 
-Both campaigns were approved by explicit user request. Day-1 schedule items are logged in `log.jsonl`.
+## Credential status
 
-## boAt audio deals (`boat-audio-deals-under-1100`)
+Run:
 
-| Field | Value |
-|---|---|
-| Day | 1 |
-| Channel | shortvideo |
-| Asset | video-1 |
-| Status | ready_for_manual_post |
-
-**Script (Reels/Shorts):**
-
-```
-Hook: "Three boAt deals under ₹1,100 — but only one fits your routine."
-Beat 1: Airdopes Alpha ₹799 — wireless, best value
-Beat 2: Rockerz 255 Pro+ ₹1,099 — neckband, longer battery
-Beat 3: BassHeads 104 ₹349 — wired, cheapest
-CTA: "Match the exact variant, then recheck the live price."
-https://scoutly-price-scout.vercel.app/guides/boat-audio-deals-under-1100-india.html?utm_source=shortvideo&utm_medium=video&utm_campaign=boat-audio-deals-under-1100
-Disclosure: the linked Scoutly guide contains EarnKaro affiliate links.
+```bash
+node promotion-agent/run-campaign.mjs x-check
 ```
 
-**Action:** Record and upload to Instagram Reels or YouTube Shorts. Recheck official-store prices before filming CTA.
+Current setup:
+- `X_API_BEARER_TOKEN` — present (valid format; API credits depleted on developer account)
+- OAuth user tokens — not yet added (required for live posting)
 
----
+## Day-1 X posts
 
-## Ambrane Charge R65 (`ambrane-charge-r65`)
-
-| Field | Value |
-|---|---|
-| Day | 1 |
-| Channel | community |
-| Asset | community-1 |
-| Status | ready_for_manual_post |
-
-**Reply draft (use only on relevant threads; do not mass-post):**
+### boAt audio deals (`boat-audio-deals-under-1100`)
 
 ```
-If your laptop accepts USB-C Power Delivery at 65W or less, a 65W charger can be enough. Check the wattage printed on your original adapter and whether the laptop charges over USB-C at all. For the Ambrane Charge R65 specifically, also confirm model ACHA-07 on the listing and remember that using two outputs changes the allocation. I documented the manual's split and a buying checklist here: https://scoutly-price-scout.vercel.app/guides/ambrane-charge-r65-65w-gan-charger-india.html?utm_source=community&utm_medium=referral&utm_campaign=ambrane-charge-r65 Disclosure: the linked Scoutly guide contains an Amazon affiliate link.
+boAt Airdopes Alpha at ₹799 is Scoutly's best-value wireless pick under ₹1,100 — but only if you want true wireless. Full comparison: https://scoutly-price-scout.vercel.app/guides/boat-audio-deals-under-1100-india.html?utm_source=x&utm_medium=social&utm_campaign=boat-audio-deals-under-1100
 ```
 
-**Suggested communities:** Reddit r/IndianGaming or r/developersIndia (charger/laptop threads), IndiaTech subreddits — only when someone asks about 65W chargers or laptop USB-C charging.
+### Ambrane Charge R65 (`ambrane-charge-r65`)
 
----
+```
+A "65W" label is only the start. Check USB-C PD compatibility, exact model ACHA-07, port allocation, warranty, and the delivered total before buying. https://scoutly-price-scout.vercel.app/guides/ambrane-charge-r65-65w-gan-charger-india.html?utm_source=x&utm_medium=social&utm_campaign=ambrane-charge-r65
+```
 
-## Next scheduled posts (do not publish yet)
+## Commands
 
-| Campaign | Day | Channel | Asset |
-|---|---|---|---|
-| boAt | 2 | x | x-1 |
-| boAt | 3 | community | community-1 |
-| Ambrane | 2 | shortvideo | video-1 |
-| Ambrane | 3 | x | x-1 |
+```bash
+# Queue or auto-post (when OAuth tokens are present)
+node promotion-agent/run-campaign.mjs publish --campaign boat-audio-deals-under-1100 --platform x
+node promotion-agent/run-campaign.mjs publish --campaign ambrane-charge-r65 --platform x --index 0
 
-Run `node promotion-agent/run-campaign.mjs publish --campaign <slug> --platform <name>` when each day arrives.
+# Force manual queue only
+node promotion-agent/run-campaign.mjs publish --campaign ambrane-charge-r65 --manual
+```

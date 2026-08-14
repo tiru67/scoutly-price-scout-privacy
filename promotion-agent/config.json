@@ -7,11 +7,11 @@
     "affiliateDisclosure": "Disclosure: this page contains an Amazon affiliate link."
   },
   "channels": {
-    "linkedin": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
-    "x": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
-    "newsletter": { "enabled": true, "autoPublish": false, "weeklyLimit": 1 },
-    "communities": { "enabled": true, "autoPublish": false, "perCommunityWeeklyLimit": 1 },
-    "shortVideo": { "enabled": true, "autoPublish": false, "weeklyLimit": 3 }
+    "x": { "enabled": true, "autoPublish": true, "dailyLimit": 2 },
+    "linkedin": { "enabled": false, "autoPublish": false, "dailyLimit": 2 },
+    "newsletter": { "enabled": false, "autoPublish": false, "weeklyLimit": 1 },
+    "communities": { "enabled": false, "autoPublish": false, "perCommunityWeeklyLimit": 1 },
+    "shortVideo": { "enabled": false, "autoPublish": false, "weeklyLimit": 3 }
   },
   "analytics": {
     "primaryKpis": ["qualified_visits", "engaged_sessions", "affiliate_clicks", "email_signups", "conversions"],

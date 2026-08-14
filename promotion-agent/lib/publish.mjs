@@ -4,13 +4,15 @@ import { approvalsDir, outputDir } from './paths.mjs';
 import { getApprovalState, assertPublishAllowed, approveCampaign } from './approval.mjs';
 import { loadConfig } from './config.mjs';
 import { recordMetrics } from './metrics.mjs';
+import { getXCredentialStatus, postTweet } from './x-api.mjs';
 
 const publishLog = join(approvalsDir, '..', 'published', 'log.jsonl');
 const limitsFile = join(approvalsDir, '..', 'published', 'daily-limits.json');
+const ACTIVE_PLATFORM = 'x';
 
 const LAUNCH_DAY = {
-  'boat-audio-deals-under-1100': { platform: 'shortvideo', postIndex: 0 },
-  'ambrane-charge-r65': { platform: 'community', postIndex: 0 }
+  'boat-audio-deals-under-1100': { platform: 'x', postIndex: 0 },
+  'ambrane-charge-r65': { platform: 'x', postIndex: 0 }
 };
 
 const PLATFORM_POSTS = {
@@ -111,7 +113,13 @@ export async function logPublish(entry) {
   await writeDailyLimits(limits);
 }
 
-export async function publishToPlatform({ slug, platform, postIndex = 0, mode = 'manual' }) {
+function resolvePublishMode(platform, requestedMode) {
+  if (platform !== 'x') return 'manual';
+  if (requestedMode === 'manual' || requestedMode === 'auto') return requestedMode;
+  return getXCredentialStatus().canPost ? 'auto' : 'manual';
+}
+
+export async function publishToPlatform({ slug, platform = ACTIVE_PLATFORM, postIndex = 0, mode } = {}) {
   const approval = await getApprovalState(slug);
   assertPublishAllowed(approval, platform);
 
@@ -125,14 +133,31 @@ export async function publishToPlatform({ slug, platform, postIndex = 0, mode = 
   }
 
   const body = posts[postIndex];
+  const resolvedMode = resolvePublishMode(platform, mode);
   const entry = {
     slug,
     platform,
     postIndex,
-    mode,
-    status: mode === 'manual' ? 'ready_for_manual_post' : 'posted',
+    mode: resolvedMode,
+    status: resolvedMode === 'manual' ? 'ready_for_manual_post' : 'posting',
     body
   };
+
+  if (resolvedMode === 'auto' && platform === 'x') {
+    try {
+      const posted = await postTweet(body);
+      entry.status = 'posted';
+      entry.tweetId = posted.tweetId;
+      entry.postedText = posted.text;
+    } catch (error) {
+      entry.status = 'post_failed';
+      entry.error = error.message;
+      entry.errorStatus = error.status || null;
+      entry.errorPayload = error.payload || null;
+      await logPublish(entry);
+      throw error;
+    }
+  }
 
   await logPublish(entry);
 
@@ -147,18 +172,18 @@ export async function publishToPlatform({ slug, platform, postIndex = 0, mode = 
 
 export async function publishLaunchDay({ slugs = ['boat-audio-deals-under-1100', 'ambrane-charge-r65'] } = {}) {
   const results = [];
+  const xStatus = getXCredentialStatus();
   for (const slug of slugs) {
-    await approveCampaign(slug);
+    await approveCampaign(slug, ['x']);
     const dayOne = LAUNCH_DAY[slug];
     if (!dayOne) continue;
     if (await canPublishPlatform(dayOne.platform)) {
       results.push(await publishToPlatform({
         slug,
         platform: dayOne.platform,
-        postIndex: dayOne.postIndex,
-        mode: 'manual'
+        postIndex: dayOne.postIndex
       }));
     }
   }
-  return results;
+  return { results, xStatus };
 }
