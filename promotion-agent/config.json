@@ -1,0 +1,28 @@
+{
+  "brand": {
+    "name": "Scoutly",
+    "site": "https://scoutly-price-scout.vercel.app/",
+    "audience": "Indian shoppers who want evidence-based electronics and buying advice",
+    "voice": ["clear", "practical", "evidence-first", "non-hype"],
+    "affiliateDisclosure": "Disclosure: this page contains an Amazon affiliate link."
+  },
+  "channels": {
+    "linkedin": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
+    "x": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
+    "newsletter": { "enabled": true, "autoPublish": false, "weeklyLimit": 1 },
+    "communities": { "enabled": true, "autoPublish": false, "perCommunityWeeklyLimit": 1 },
+    "shortVideo": { "enabled": true, "autoPublish": false, "weeklyLimit": 3 }
+  },
+  "analytics": {
+    "primaryKpis": ["qualified_visits", "engaged_sessions", "affiliate_clicks", "email_signups", "conversions"],
+    "reviewCadence": "weekly",
+    "minimumExperimentWindowDays": 7
+  },
+  "guardrails": {
+    "requireApprovalBeforePublish": true,
+    "maxPostsPerPlatformPerDay": 2,
+    "pauseAfterConsecutiveWeakPeriods": 2,
+    "neverInventLivePrices": true,
+    "neverCreateArtificialEngagement": true
+  }
+}

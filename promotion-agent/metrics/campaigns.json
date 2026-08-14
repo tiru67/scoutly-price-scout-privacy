@@ -1,0 +1,37 @@
+{
+  "campaigns": {
+    "ambrane-charge-r65": {
+      "slug": "ambrane-charge-r65",
+      "title": "Scoutly first-referral wedge: Ambrane Charge R65",
+      "createdAt": "2026-08-14",
+      "status": "draft",
+      "publishApproved": false,
+      "primaryKpi": "qualified_visits_and_affiliate_clicks",
+      "periods": [
+        {
+          "recordedAt": "2026-08-14T06:40:23.316Z",
+          "qualified_visits": 12,
+          "engaged_sessions": 5,
+          "affiliate_clicks": 1,
+          "email_signups": 0,
+          "conversions": 0,
+          "impressions": 40,
+          "comments": 0,
+          "saves": 0
+        }
+      ],
+      "channels": {},
+      "totals": {
+        "qualified_visits": 12,
+        "engaged_sessions": 5,
+        "affiliate_clicks": 1,
+        "email_signups": 0,
+        "conversions": 0,
+        "impressions": 40,
+        "comments": 0,
+        "saves": 0
+      }
+    }
+  },
+  "reviewPeriods": []
+}

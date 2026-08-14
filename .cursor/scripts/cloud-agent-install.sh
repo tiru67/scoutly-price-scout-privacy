@@ -10,5 +10,6 @@ fi
 
 node --check server.mjs
 node --check amazon-creators.mjs
+node --check promotion-agent/run-campaign.mjs
 
 echo "Scoutly environment install complete."
