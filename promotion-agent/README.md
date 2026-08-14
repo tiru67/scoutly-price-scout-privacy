@@ -49,7 +49,10 @@ node promotion-agent/run-campaign.mjs status --campaign ambrane-charge-r65
 node promotion-agent/run-campaign.mjs record --campaign ambrane-charge-r65 --json '{"qualified_visits":12,"engaged_sessions":5,"affiliate_clicks":1,"impressions":40}'
 
 # Publishing is blocked until you explicitly approve
-node promotion-agent/run-campaign.mjs publish-check --campaign ambrane-charge-r65 --platform linkedin
+node promotion-agent/run-campaign.mjs publish-check --campaign ambrane-charge-r65 --platform x
+
+# Verify X credentials
+node promotion-agent/run-campaign.mjs x-check
 ```
 
 ## Operating rules
@@ -74,10 +77,12 @@ Read these before every run:
 
 ## What must be connected before publishing
 
-- A supported social or email API/MCP integration
+- **X only** — active publishing channel for this agent
+- `X_API_BEARER_TOKEN` — validates API access (read checks)
+- `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET` — required for live tweet posting
 - Analytics access (GA4, Plausible, Vercel Analytics, or equivalent)
 - Amazon Associates reporting for `scoutlyprice2-21`
-- Explicit human approval per campaign and platform
+- Explicit human approval per campaign
 
 Keep tokens in Cursor secrets. Never commit credentials to this repository.
 

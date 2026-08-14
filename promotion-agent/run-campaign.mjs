@@ -13,6 +13,7 @@ import { auditAllPosts, choosePlatforms, findAuditEntry } from './lib/review-pos
 import { buildPlatformReview, renderPlatformReviewMarkdown } from './lib/platform-review.mjs';
 import { approveCampaign } from './lib/approval.mjs';
 import { publishLaunchDay, publishToPlatform } from './lib/publish.mjs';
+import { checkXConnection, getXCredentialStatus } from './lib/x-api.mjs';
 
 function usage() {
   console.log(`Scoutly promotion agent
@@ -25,10 +26,11 @@ Commands:
   status --campaign <slug>       Show metrics, approval, and experiment status
   record --campaign <slug> [--json '<metrics>']
                                  Append a review-period metrics snapshot
-  publish [--campaign <slug>] [--platform <name>] [--index <n>]
-                                 Approve and queue/post campaign content
+  publish [--campaign <slug>] [--platform x] [--index <n>] [--manual]
+                                 Approve and post/queue X campaign content
   publish-launch                 Approve both campaigns and queue day-1 X posts
-  approve --campaign <slug>      Mark campaign approved for publishing
+  x-check                        Verify X API credentials and account access
+  approve --campaign <slug>      Mark campaign approved for X publishing
   publish-check --campaign <slug> --platform <name>
                                  Verify approval before any external publish attempt
 
@@ -156,19 +158,42 @@ async function cmdPublish(args) {
   const platform = args.platform || 'x';
   const postIndex = Number(args.index || 0);
   if (!slug) throw new Error('publish requires --campaign <slug>');
-  await approveCampaign(slug);
-  const entry = await publishToPlatform({ slug, platform, postIndex, mode: 'manual' });
-  console.log(JSON.stringify({ ok: true, entry, message: 'Content queued in promotion-agent/published/log.jsonl for manual posting or API handoff.' }, null, 2));
+  if (platform !== 'x') throw new Error('Only X publishing is enabled. Use --platform x.');
+  await approveCampaign(slug, ['x']);
+  const entry = await publishToPlatform({
+    slug,
+    platform,
+    postIndex,
+    mode: args.manual ? 'manual' : undefined
+  });
+  const message = entry.status === 'posted'
+    ? `Posted to X as tweet ${entry.tweetId}.`
+    : 'Content queued in promotion-agent/published/log.jsonl for manual X posting.';
+  console.log(JSON.stringify({ ok: true, entry, xStatus: getXCredentialStatus(), message }, null, 2));
 }
 
 async function cmdPublishLaunch() {
-  const results = await publishLaunchDay();
+  const { results, xStatus } = await publishLaunchDay();
+  const posted = results.filter((entry) => entry.status === 'posted');
+  const queued = results.filter((entry) => entry.status === 'ready_for_manual_post');
   console.log(JSON.stringify({
     ok: true,
     approved: ['boat-audio-deals-under-1100', 'ambrane-charge-r65'],
-    queued: results,
-    note: 'No social API connected. Day-1 schedule items are approved and logged for manual publish (boAt: shortvideo, Ambrane: community). Connect X/LinkedIn API credentials to enable automated posting.'
+    platform: 'x',
+    xStatus,
+    posted,
+    queued,
+    results,
+    note: xStatus.canPost
+      ? 'OAuth user-context credentials detected. Posts attempt live X publishing.'
+      : 'Bearer token present, but live posting needs OAuth user tokens (X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET). Queued posts are ready for manual copy-paste on X.'
   }, null, 2));
+}
+
+async function cmdXCheck() {
+  const credentials = getXCredentialStatus();
+  const connection = await checkXConnection();
+  console.log(JSON.stringify({ ok: connection.connected, credentials, connection }, null, 2));
 }
 
 async function cmdReview() {
@@ -198,6 +223,7 @@ async function main() {
     if (command === 'approve') return cmdApprove(args);
     if (command === 'publish') return cmdPublish(args);
     if (command === 'publish-launch') return cmdPublishLaunch();
+    if (command === 'x-check') return cmdXCheck();
     if (command === 'publish-check') return cmdPublishCheck(args);
     if (command === 'help' || command === '--help') return usage();
     throw new Error(`Unknown command: ${command}`);

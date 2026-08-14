@@ -13,7 +13,7 @@ Source: `/workspace/marketing/ambrane-charge-r65-launch.md`
 - **Primary CTA:** Check current Amazon.in price after verifying exact model and seller
 - **Guide URL:** https://scoutly-price-scout.vercel.app/guides/ambrane-charge-r65-65w-gan-charger-india.html
 - **Affiliate product URL:** https://www.amazon.in/dp/B0FLPYQJ57?tag=scoutlyprice2-21
-- **Publishing:** blocked until explicit approval (`publishApproved: false`)
+- **Publishing:** approved (`publishApproved: true`); day-1 community reply queued in `promotion-agent/published/log.jsonl`
 - **Platform priority (content_fit):** primary **community**, secondary **shortvideo**
 - **Selection note:** No channel revenue data yet. Using content-fit scores from post audit (social channels only).
 
