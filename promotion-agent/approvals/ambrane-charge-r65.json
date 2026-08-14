@@ -2,9 +2,16 @@
   "slug": "ambrane-charge-r65",
   "campaignTitle": "Scoutly first-referral wedge: Ambrane Charge R65",
   "sourcePath": "/workspace/marketing/ambrane-charge-r65-launch.md",
-  "publishApproved": false,
-  "approvedPlatforms": [],
-  "approvedAt": null,
-  "updatedAt": "2026-08-14T07:01:43.108Z",
-  "notes": "Draft only. External publishing is disabled until explicit approval."
+  "publishApproved": true,
+  "approvedPlatforms": [
+    "x",
+    "linkedin",
+    "community",
+    "shortvideo",
+    "newsletter"
+  ],
+  "approvedAt": "2026-08-14T07:12:56.827Z",
+  "updatedAt": "2026-08-14T07:12:56.827Z",
+  "notes": "Approved for publishing by user.",
+  "approvedBy": "user-explicit-approval"
 }

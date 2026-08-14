@@ -49,6 +49,24 @@ export async function saveApprovalDraft(slug, analysis) {
   return next;
 }
 
+export async function approveCampaign(slug, platforms) {
+  await mkdir(approvalsDir, { recursive: true });
+  const path = join(approvalsDir, `${slug}.json`);
+  const current = await readApproval(slug);
+  const next = {
+    ...current,
+    slug,
+    publishApproved: true,
+    approvedPlatforms: platforms || ['x', 'linkedin', 'community', 'shortvideo', 'newsletter'],
+    approvedAt: new Date().toISOString(),
+    approvedBy: 'user-explicit-approval',
+    updatedAt: new Date().toISOString(),
+    notes: 'Approved for publishing by user.'
+  };
+  await writeFile(path, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+  return next;
+}
+
 export function assertPublishAllowed(approval, platform) {
   if (!approval.publishApproved) {
     throw new Error(

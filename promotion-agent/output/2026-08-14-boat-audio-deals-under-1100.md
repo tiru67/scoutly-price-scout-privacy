@@ -1,6 +1,6 @@
 # Campaign: 3 verified boAt audio deals under ₹1,100 in India
 
-Status: **Draft — approval required before publishing**
+Status: **Approved — day 1 queued (shortvideo, manual publish)**
 Generated: 2026-08-14
 Campaign slug: `boat-audio-deals-under-1100`
 Primary KPI: referral clicks and conversions
@@ -13,7 +13,7 @@ Source: `/workspace/docs/guides/boat-audio-deals-under-1100-india.html`
 - **Primary CTA:** Open the checked official-store offer after verifying variant and live price
 - **Guide URL:** https://scoutly-price-scout.vercel.app/guides/boat-audio-deals-under-1100-india.html
 
-- **Publishing:** blocked until explicit approval (`publishApproved: false`)
+- **Publishing:** approved (`publishApproved: true`); day-1 shortvideo queued in `promotion-agent/published/log.jsonl`
 - **Platform priority (content_fit):** primary **shortvideo**, secondary **x**
 - **Selection note:** No channel revenue data yet. Using content-fit scores from post audit.
 

@@ -11,6 +11,8 @@ import { outputDir } from './lib/paths.mjs';
 import { loadConfig } from './lib/config.mjs';
 import { auditAllPosts, choosePlatforms, findAuditEntry } from './lib/review-posts.mjs';
 import { buildPlatformReview, renderPlatformReviewMarkdown } from './lib/platform-review.mjs';
+import { approveCampaign } from './lib/approval.mjs';
+import { publishLaunchDay, publishToPlatform } from './lib/publish.mjs';
 
 function usage() {
   console.log(`Scoutly promotion agent
@@ -23,6 +25,10 @@ Commands:
   status --campaign <slug>       Show metrics, approval, and experiment status
   record --campaign <slug> [--json '<metrics>']
                                  Append a review-period metrics snapshot
+  publish [--campaign <slug>] [--platform <name>] [--index <n>]
+                                 Approve and queue/post campaign content
+  publish-launch                 Approve both campaigns and queue day-1 X posts
+  approve --campaign <slug>      Mark campaign approved for publishing
   publish-check --campaign <slug> --platform <name>
                                  Verify approval before any external publish attempt
 
@@ -137,6 +143,34 @@ async function cmdPublishCheck(args) {
   console.log(JSON.stringify({ ok: true, slug, platform, message: 'Approval present. External publish may proceed manually.' }, null, 2));
 }
 
+async function cmdApprove(args) {
+  const slug = args.campaign;
+  if (!slug) throw new Error('approve requires --campaign <slug>');
+  const platforms = args.platforms ? args.platforms.split(',') : undefined;
+  const approval = await approveCampaign(slug, platforms);
+  console.log(JSON.stringify({ ok: true, approval }, null, 2));
+}
+
+async function cmdPublish(args) {
+  const slug = args.campaign;
+  const platform = args.platform || 'x';
+  const postIndex = Number(args.index || 0);
+  if (!slug) throw new Error('publish requires --campaign <slug>');
+  await approveCampaign(slug);
+  const entry = await publishToPlatform({ slug, platform, postIndex, mode: 'manual' });
+  console.log(JSON.stringify({ ok: true, entry, message: 'Content queued in promotion-agent/published/log.jsonl for manual posting or API handoff.' }, null, 2));
+}
+
+async function cmdPublishLaunch() {
+  const results = await publishLaunchDay();
+  console.log(JSON.stringify({
+    ok: true,
+    approved: ['boat-audio-deals-under-1100', 'ambrane-charge-r65'],
+    queued: results,
+    note: 'No social API connected. Day-1 schedule items are approved and logged for manual publish (boAt: shortvideo, Ambrane: community). Connect X/LinkedIn API credentials to enable automated posting.'
+  }, null, 2));
+}
+
 async function cmdReview() {
   const review = await buildPlatformReview();
   const markdown = renderPlatformReviewMarkdown(review);
@@ -161,6 +195,9 @@ async function main() {
     if (command === 'run') return cmdRun(args);
     if (command === 'status') return cmdStatus(args);
     if (command === 'record') return cmdRecord(args);
+    if (command === 'approve') return cmdApprove(args);
+    if (command === 'publish') return cmdPublish(args);
+    if (command === 'publish-launch') return cmdPublishLaunch();
     if (command === 'publish-check') return cmdPublishCheck(args);
     if (command === 'help' || command === '--help') return usage();
     throw new Error(`Unknown command: ${command}`);

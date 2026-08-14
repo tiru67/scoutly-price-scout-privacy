@@ -18,9 +18,33 @@
           "impressions": 40,
           "comments": 0,
           "saves": 0
+        },
+        {
+          "recordedAt": "2026-08-14T07:12:56.828Z",
+          "qualified_visits": 0,
+          "engaged_sessions": 0,
+          "affiliate_clicks": 0,
+          "email_signups": 0,
+          "conversions": 0,
+          "impressions": 0,
+          "comments": 0,
+          "saves": 0,
+          "channels": {
+            "community": {
+              "impressions": 1,
+              "qualified_visits": 0,
+              "affiliate_clicks": 0
+            }
+          }
         }
       ],
-      "channels": {},
+      "channels": {
+        "community": {
+          "impressions": 1,
+          "qualified_visits": 0,
+          "affiliate_clicks": 0
+        }
+      },
       "totals": {
         "qualified_visits": 12,
         "engaged_sessions": 5,
@@ -39,8 +63,33 @@
       "status": "draft",
       "publishApproved": false,
       "primaryKpi": "referral_clicks_and_conversions",
-      "periods": [],
-      "channels": {},
+      "periods": [
+        {
+          "recordedAt": "2026-08-14T07:12:56.827Z",
+          "qualified_visits": 0,
+          "engaged_sessions": 0,
+          "affiliate_clicks": 0,
+          "email_signups": 0,
+          "conversions": 0,
+          "impressions": 0,
+          "comments": 0,
+          "saves": 0,
+          "channels": {
+            "shortvideo": {
+              "impressions": 1,
+              "qualified_visits": 0,
+              "affiliate_clicks": 0
+            }
+          }
+        }
+      ],
+      "channels": {
+        "shortvideo": {
+          "impressions": 1,
+          "qualified_visits": 0,
+          "affiliate_clicks": 0
+        }
+      },
       "totals": {
         "qualified_visits": 0,
         "engaged_sessions": 0,

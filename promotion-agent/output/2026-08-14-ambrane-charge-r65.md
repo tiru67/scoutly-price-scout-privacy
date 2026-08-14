@@ -1,6 +1,6 @@
 # Campaign: Scoutly first-referral wedge: Ambrane Charge R65
 
-Status: **Draft — approval required before publishing**
+Status: **Approved — day 1 queued (community, manual publish)**
 Generated: 2026-08-14
 Campaign slug: `ambrane-charge-r65`
 Primary KPI: referral clicks and conversions
