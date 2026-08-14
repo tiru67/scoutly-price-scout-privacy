@@ -19,6 +19,8 @@ Commands:
 Examples:
   node promotion-agent/cli.mjs generate --input docs/guides/ambrane-charge-r65-65w-gan-charger-india.html
   node promotion-agent/cli.mjs scan
+  node promotion-agent/cli.mjs x-check
+  node promotion-agent/cli.mjs x-post --text "Your post" [--send]
   node promotion-agent/cli.mjs review --input promotion-agent/metrics.example.json`);
 }
 
@@ -153,11 +155,28 @@ async function review(args) {
   console.log(JSON.stringify({ periods: periods.length, totals, engagementRate: `${engagementRate}%`, affiliateClickRate: `${clickRate}%`, recommendation: totals.conversions > 0 ? 'Increase the best-performing channel gradually.' : 'Keep drafting and improve the destination or hook before increasing volume.' }, null, 2));
 }
 
-const { positionals, values } = parseArgs({ allowPositionals: true, options: { input: { type: 'string' }, slug: { type: 'string' }, url: { type: 'string' }, help: { type: 'boolean', short: 'h' } } });
+async function xCheck() {
+  const { getCurrentUser } = await import('./x.mjs');
+  console.log(JSON.stringify(await getCurrentUser(), null, 2));
+}
+
+async function xPost(args) {
+  if (!args.text) throw new Error('--text is required');
+  if (!args.send) {
+    console.log(JSON.stringify({ dryRun: true, text: args.text, length: args.text.length, message: 'Nothing was posted. Add --send only when this exact text is approved for publication.' }, null, 2));
+    return;
+  }
+  const { postTweet } = await import('./x.mjs');
+  console.log(JSON.stringify({ posted: true, ...await postTweet(args.text) }, null, 2));
+}
+
+const { positionals, values } = parseArgs({ allowPositionals: true, options: { input: { type: 'string' }, slug: { type: 'string' }, url: { type: 'string' }, text: { type: 'string' }, send: { type: 'boolean' }, help: { type: 'boolean', short: 'h' } } });
 if (values.help || !positionals[0]) { usage(); process.exit(0); }
 try {
   if (positionals[0] === 'generate') await generate(values);
   else if (positionals[0] === 'scan') await scan();
+  else if (positionals[0] === 'x-check') await xCheck();
+  else if (positionals[0] === 'x-post') await xPost(values);
   else if (positionals[0] === 'review') await review(values);
   else throw new Error(`Unknown command: ${positionals[0]}`);
 } catch (error) {

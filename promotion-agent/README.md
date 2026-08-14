@@ -26,6 +26,28 @@ node promotion-agent/cli.mjs review --input promotion-agent/metrics.example.json
 
 The CLI never publishes externally. Publishing should be added only after the corresponding platform API/MCP integration, secret, rate limit, and approval rule are configured.
 
+## Local X integration
+
+With rotated credentials in `.env.local`, check the authenticated X user without posting:
+
+```bash
+node promotion-agent/cli.mjs x-check
+```
+
+Preview a post without sending it:
+
+```bash
+node promotion-agent/cli.mjs x-post --text "Your post"
+```
+
+Send only the exact text you intend to publish:
+
+```bash
+node promotion-agent/cli.mjs x-post --text "Your post" --send
+```
+
+The integration uses OAuth 1.0a user credentials for posting and never prints secret values.
+
 ## Run repeatedly with Codex
 
 Use [codex-automation-prompt.md](codex-automation-prompt.md) as the instruction for a recurring Codex task. The prompt makes each run idempotent at the campaign-output level, asks for metrics-based improvement, and keeps external publishing disabled until integrations and approval rules are ready.
