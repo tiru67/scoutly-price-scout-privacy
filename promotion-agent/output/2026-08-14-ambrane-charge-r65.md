@@ -3,17 +3,19 @@
 Status: **Draft — approval required before publishing**
 Generated: 2026-08-14
 Campaign slug: `ambrane-charge-r65`
-Primary KPI: qualified visits and affiliate clicks
+Primary KPI: referral clicks and conversions
 Source: `/workspace/marketing/ambrane-charge-r65-launch.md`
 
 ## Campaign summary
 
 - **Audience:** Indian professionals, students, and travellers with USB-C laptops and phones
-- **Search intent:** Commercial investigation — decide whether a specific charger model fits the buyer setup
+- **Search intent:** Deal comparison — pick the right product at a checked price
 - **Primary CTA:** Check current Amazon.in price after verifying exact model and seller
 - **Guide URL:** https://scoutly-price-scout.vercel.app/guides/ambrane-charge-r65-65w-gan-charger-india.html
 - **Affiliate product URL:** https://www.amazon.in/dp/B0FLPYQJ57?tag=scoutlyprice2-21
 - **Publishing:** blocked until explicit approval (`publishApproved: false`)
+- **Platform priority (content_fit):** primary **community**, secondary **shortvideo**
+- **Selection note:** No channel revenue data yet. Using content-fit scores from post audit (social channels only).
 
 ## Analysis
 
@@ -27,7 +29,7 @@ Source: `/workspace/marketing/ambrane-charge-r65-launch.md`
 
 ### Claims requiring verification before publish
 - Recheck live Amazon.in price, seller, and stock before any post references a price threshold
-- Confirm listing shows Charge R65, model ACHA-07, and ASIN B0FLPYQJ57
+- Confirm listing shows the exact model and ASIN referenced in the guide
 - Do not claim lowest price unless a verified source supports it at publish time
 - Keep affiliate disclosure visible wherever a CTA appears
 
@@ -207,19 +209,18 @@ Disclosure: the linked Scoutly guide contains an Amazon affiliate link.
 
 ## Seven-day schedule
 
-| Day | Channel | Asset | Measure |
-|---|---|---|---|
-| 1 | linkedin | linkedin-a-compatibility | engaged_sessions, guide clicks |
-| 2 | x | x-1 | qualified_visits (utm_source=x) |
-| 3 | community | community-1 | referral visits, helpful replies |
-| 4 | linkedin | linkedin-b-allocation | scroll depth, guide clicks |
-| 5 | x | x-2 | affiliate_clicks |
-| 6 | shortvideo | video-1 | saves, profile visits |
-| 7 | review | experiment-review | conversions, qualified visits, choose next hook |
+| Day | Priority | Channel | Asset | Measure |
+|---|---|---|---|---|
+| 1 | primary | community | community-1 | referral visits, affiliate_clicks, helpful replies |
+| 2 | secondary | shortvideo | video-1 | saves, profile visits, affiliate_clicks |
+| 3 | support | x | x-1 | qualified_visits, affiliate_clicks (utm_source=x) |
+| 4 | support | linkedin | linkedin-a-compatibility | engaged_sessions, guide clicks |
+| 5 | support | newsletter | newsletter-main | email clicks, affiliate_clicks |
+| 7 | review | review | experiment-review | conversions, referral revenue by platform, choose next channel |
 
 ## Measurement plan
 
-**Primary KPI:** qualified_visits_and_affiliate_clicks
+**Primary KPI:** referral_clicks_and_conversions
 
 **Targets**
 - qualified_visits: 100

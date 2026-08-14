@@ -9,12 +9,15 @@ import { saveApprovalDraft, getApprovalState, assertPublishAllowed } from './lib
 import { recommendExperiment } from './lib/experiments.mjs';
 import { outputDir } from './lib/paths.mjs';
 import { loadConfig } from './lib/config.mjs';
+import { auditAllPosts, choosePlatforms, findAuditEntry } from './lib/review-posts.mjs';
+import { buildPlatformReview, renderPlatformReviewMarkdown } from './lib/platform-review.mjs';
 
 function usage() {
   console.log(`Scoutly promotion agent
 
 Commands:
   detect [--all]                 List detected posts and new-campaign candidates
+  review                         Audit posts and rank platforms by revenue potential
   run [--post <path>] [--campaign <slug>]
                                  Analyze source, generate drafts, save campaign output
   status --campaign <slug>       Show metrics, approval, and experiment status
@@ -57,24 +60,28 @@ async function cmdRun(args) {
     console.warn('Warning: requireApprovalBeforePublish is false in config.json');
   }
 
+  const audit = await auditAllPosts();
   const post = await resolvePostInput(args.post || args.campaign || null);
-  const analysis = analyzePost(post);
+  const auditEntry = findAuditEntry(audit, post);
+  const platformChoice = choosePlatforms({ analysis: {}, metrics: null, auditEntry });
+  const analysis = analyzePost(post, { auditEntry, platformChoice });
   if (!analysis.guideUrl) throw new Error('Could not determine guide URL for campaign.');
 
   const approval = await saveApprovalDraft(analysis.slug, analysis);
-  const metrics = await ensureCampaignMetrics(analysis.slug, analysis);
-  const campaignPackage = createCampaignPackage(analysis);
-  const comparison = comparePeriods(metrics);
-  const experiment = recommendExperiment({ analysis, comparison, campaign: metrics });
+  const campaignMetrics = await ensureCampaignMetrics(analysis.slug, analysis);
+  const refreshedChoice = choosePlatforms({ analysis, metrics: campaignMetrics, auditEntry });
+  const campaignPackage = createCampaignPackage({ ...analysis, platformChoice: refreshedChoice });
+  const comparison = comparePeriods(campaignMetrics);
+  const experiment = recommendExperiment({ analysis, comparison, campaign: campaignMetrics });
   const markdown = renderCampaignMarkdown({
-    analysis,
+    analysis: { ...analysis, platformChoice: refreshedChoice },
     links: campaignPackage.links,
     drafts: campaignPackage.drafts,
     schedule: campaignPackage.schedule,
     measurement: campaignPackage.measurement,
     experiment,
     approval,
-    metrics
+    metrics: campaignMetrics
   });
 
   await mkdir(outputDir, { recursive: true });
@@ -88,6 +95,7 @@ async function cmdRun(args) {
     slug: analysis.slug,
     publishApproved: approval.publishApproved,
     primaryKpi: analysis.primaryKpi,
+    platformPriority: refreshedChoice,
     links: campaignPackage.links,
     scheduleDays: campaignPackage.schedule.length
   }, null, 2));
@@ -129,11 +137,27 @@ async function cmdPublishCheck(args) {
   console.log(JSON.stringify({ ok: true, slug, platform, message: 'Approval present. External publish may proceed manually.' }, null, 2));
 }
 
+async function cmdReview() {
+  const review = await buildPlatformReview();
+  const markdown = renderPlatformReviewMarkdown(review);
+  await mkdir(outputDir, { recursive: true });
+  const outputPath = join(outputDir, `${new Date().toISOString().slice(0, 10)}-platform-revenue-review.md`);
+  await writeFile(outputPath, markdown, 'utf8');
+  console.log(JSON.stringify({
+    ok: true,
+    outputPath,
+    topPost: review.monetized[0]?.title || null,
+    topPlatform: review.platformRanking[0]?.platform || null,
+    platformRanking: review.platformRanking
+  }, null, 2));
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const command = args._[0] || 'run';
   try {
     if (command === 'detect') return cmdDetect(args);
+    if (command === 'review') return cmdReview();
     if (command === 'run') return cmdRun(args);
     if (command === 'status') return cmdStatus(args);
     if (command === 'record') return cmdRecord(args);

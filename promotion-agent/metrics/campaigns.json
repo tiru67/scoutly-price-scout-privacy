@@ -31,6 +31,26 @@
         "comments": 0,
         "saves": 0
       }
+    },
+    "boat-audio-deals-under-1100": {
+      "slug": "boat-audio-deals-under-1100",
+      "title": "3 verified boAt audio deals under ₹1,100 in India",
+      "createdAt": "2026-08-14",
+      "status": "draft",
+      "publishApproved": false,
+      "primaryKpi": "referral_clicks_and_conversions",
+      "periods": [],
+      "channels": {},
+      "totals": {
+        "qualified_visits": 0,
+        "engaged_sessions": 0,
+        "affiliate_clicks": 0,
+        "email_signups": 0,
+        "conversions": 0,
+        "impressions": 0,
+        "comments": 0,
+        "saves": 0
+      }
     }
   },
   "reviewPeriods": []

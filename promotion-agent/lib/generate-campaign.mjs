@@ -1,15 +1,20 @@
 import { buildCampaignLinks } from './utm.mjs';
+import { buildPrioritySchedule } from './channel-priority.mjs';
 
-function disclosure() {
+function disclosure(analysis) {
+  if (analysis.monetization?.type === 'earnkaro_brand_store') {
+    return 'Disclosure: the linked Scoutly guide contains EarnKaro affiliate links.';
+  }
   return 'Disclosure: the linked Scoutly guide contains an Amazon affiliate link.';
 }
 
-export function buildDrafts(analysis, links) {
+function buildAmbraneDrafts(analysis, links) {
   const guide = links.linkedin;
   const xLink = links.x;
   const newsletterLink = links.newsletter;
   const communityLink = links.community;
   const videoLink = links.shortvideo;
+  const note = disclosure(analysis);
 
   return {
     linkedin: [
@@ -26,7 +31,7 @@ For the Ambrane Charge R65 (model ACHA-07), check:
 
 Scoutly’s evidence-first breakdown: ${guide}
 
-${disclosure()}`
+${note}`
       },
       {
         id: 'linkedin-b-allocation',
@@ -37,7 +42,7 @@ On the Ambrane Charge R65, the official manual shows separate allocations when m
 
 Read the allocation table and compatibility checks here: ${guide}
 
-${disclosure()}`
+${note}`
       },
       {
         id: 'linkedin-c-checklist',
@@ -52,7 +57,7 @@ ${disclosure()}`
 
 Scoutly applied that checklist to the Ambrane Charge R65: ${guide}
 
-${disclosure()}`
+${note}`
       }
     ],
     shortPosts: [
@@ -86,7 +91,7 @@ ${disclosure()}`
         { n: 3, text: 'Step 2: check what happens when a second device is connected. Shared output can drop laptop charging speed.' },
         { n: 4, text: 'Step 3: match the exact model on the listing. For Ambrane Charge R65 that means ACHA-07 / ASIN B0FLPYQJ57.' },
         { n: 5, text: 'Step 4: use the delivered total, seller, and warranty shown on the live page — not an old screenshot.' },
-        { n: 6, text: `Full allocation table + checklist: ${xLink} ${disclosure()}` }
+        { n: 6, text: `Full allocation table + checklist: ${xLink} ${note}` }
       ]
     },
     carouselOutline: {
@@ -116,7 +121,7 @@ What Scoutly verified in the guide:
 
 Read the full evidence-first guide: ${newsletterLink}
 
-${disclosure()}
+${note}
 
 — Scoutly`
     },
@@ -125,19 +130,19 @@ ${disclosure()}
         id: 'community-1',
         prompt: 'Is a 65W USB-C charger enough for my laptop?',
         angle: 'Answer with PD input requirements first. Mention that 65W can work for many ultrabooks, but high-power gaming laptops may need more. Link only if the community allows URLs.',
-        draft: `If your laptop accepts USB-C Power Delivery at 65W or less, a 65W charger can be enough. Check the wattage printed on your original adapter and whether the laptop charges over USB-C at all. For the Ambrane Charge R65 specifically, also confirm model ACHA-07 on the listing and remember that using two outputs changes the allocation. I documented the manual’s split and a buying checklist here: ${communityLink} ${disclosure()}`
+        draft: `If your laptop accepts USB-C Power Delivery at 65W or less, a 65W charger can be enough. Check the wattage printed on your original adapter and whether the laptop charges over USB-C at all. For the Ambrane Charge R65 specifically, also confirm model ACHA-07 on the listing and remember that using two outputs changes the allocation. I documented the manual’s split and a buying checklist here: ${communityLink} ${note}`
       },
       {
         id: 'community-2',
         prompt: 'Why does my laptop charge slower when my phone is also plugged in?',
         angle: 'Explain shared output allocation without blaming the cable blindly.',
-        draft: `Many multi-port chargers share total output across active ports. On the Ambrane Charge R65, the official manual lists combinations such as 20W + 45W when both USB-C paths are used, so the laptop side may not keep the full 65W. That is normal for this class of charger — verify your exact model and the manual table before buying. ${communityLink} ${disclosure()}`
+        draft: `Many multi-port chargers share total output across active ports. On the Ambrane Charge R65, the official manual lists combinations such as 20W + 45W when both USB-C paths are used, so the laptop side may not keep the full 65W. That is normal for this class of charger — verify your exact model and the manual table before buying. ${communityLink} ${note}`
       },
       {
         id: 'community-3',
         prompt: 'What is the difference between PD and PPS for phone charging?',
         angle: 'Plain-language explainer; avoid claiming proprietary fast-charge maxima.',
-        draft: `USB Power Delivery (PD) is the common standard for negotiating power over USB-C. PPS (Programmable Power Supply) lets devices request finer voltage/current steps, which some phones use for faster charging. A PD/PPS charger can still charge many phones well, but proprietary modes from some brands may not reach their absolute maximum on a third-party charger. Check the charging status after you connect. ${communityLink} ${disclosure()}`
+        draft: `USB Power Delivery (PD) is the common standard for negotiating power over USB-C. PPS (Programmable Power Supply) lets devices request finer voltage/current steps, which some phones use for faster charging. A PD/PPS charger can still charge many phones well, but proprietary modes from some brands may not reach their absolute maximum on a third-party charger. Check the charging status after you connect. ${communityLink} ${note}`
       }
     ],
     shortVideos: [
@@ -150,7 +155,7 @@ Beat 1: Show the Charge R65 label and model ACHA-07.
 Beat 2: Overlay the 20W + 45W row from the official manual.
 Beat 3: CTA — "Match the exact model, then check the current Amazon.in price."
 Link in description: ${videoLink}
-${disclosure()}`
+${note}`
       },
       {
         id: 'video-2',
@@ -161,17 +166,102 @@ ${disclosure()}`
 3) Delivered total, not crossed-out MRP
 Example product: Ambrane Charge R65 (ACHA-07)
 Full guide: ${videoLink}
-${disclosure()}`
+${note}`
       },
       {
         id: 'video-3',
         title: 'Who should skip a 65W charger',
         hook: 'Negative-fit angle to improve qualified traffic.',
         script: `Skip a 65W USB-C charger if your laptop needs more than 65W, you need full laptop speed while charging two devices, or you want three-device fast charging. For many ultrabooks it can still be a good one-bag option — if the price and seller check out. ${videoLink}
-${disclosure()}`
+${note}`
       }
     ]
   };
+}
+
+function buildBoatDrafts(analysis, links) {
+  const guide = links.shortvideo || links.x;
+  const xLink = links.x;
+  const videoLink = links.shortvideo;
+  const communityLink = links.community;
+  const note = disclosure(analysis);
+
+  return {
+    linkedin: [
+      {
+        id: 'linkedin-a-deal-shortlist',
+        hook: 'verified-deals',
+        body: `Three boAt audio options under ₹1,100 — but the right pick depends on how you listen.
+
+• Airdopes Alpha (₹799 checked) — best-value wireless for most shoppers
+• Rockerz 255 Pro+ (₹1,099 checked) — longer playback, neckband
+• BassHeads 104 (₹349 checked) — wired, lowest cost
+
+Scoutly compared exact variants and checked prices on the official store: ${links.linkedin}
+
+${note}`
+      }
+    ],
+    shortPosts: [
+      { id: 'x-1', body: `boAt Airdopes Alpha at ₹799 is Scoutly's best-value wireless pick under ₹1,100 — but only if you want true wireless. Full comparison: ${xLink}` },
+      { id: 'x-2', body: `Need longer battery and a secure fit? Rockerz 255 Pro+ was ₹1,099 when checked. Compare all three boAt picks: ${xLink}` },
+      { id: 'x-3', body: `Still using a 3.5 mm jack? BassHeads 104 was ₹349 when checked. See which boAt deal fits your use: ${xLink}` },
+      { id: 'x-4', body: `Checked prices ≠ guaranteed prices. Scoutly verified three boAt audio deals on the official store — recheck before checkout: ${xLink}` },
+      { id: 'x-5', body: `Wireless vs neckband vs wired under ₹1,100 — one comparison page, three exact products: ${xLink}` }
+    ],
+    threadOutline: {
+      platform: 'x',
+      title: 'Which boAt audio deal is actually worth it under ₹1,100?',
+      posts: [
+        { n: 1, text: 'Thread: three boAt audio deals under ₹1,100 — but the best pick depends on your use case.' },
+        { n: 2, text: 'Want true wireless on a budget? Airdopes Alpha was ₹799 when checked on the official store.' },
+        { n: 3, text: 'Want longer playback + neckband security? Rockerz 255 Pro+ was ₹1,099 when checked.' },
+        { n: 4, text: 'Still on a headphone jack? BassHeads 104 was ₹349 when checked — no charging needed.' },
+        { n: 5, text: 'Prices can change. Match the exact variant and recheck on the official store before buying.' },
+        { n: 6, text: `Full comparison with checked prices: ${xLink} ${note}` }
+      ]
+    },
+    carouselOutline: {
+      platform: 'shortvideo',
+      title: '3 boAt deals under ₹1,100 (15 sec each)',
+      slides: ['Airdopes Alpha ₹799 — best-value wireless', 'Rockerz 255 Pro+ ₹1,099 — long battery neckband', 'BassHeads 104 ₹349 — wired lowest cost', 'CTA: full comparison on Scoutly'],
+      ctaUrl: guide
+    },
+    newsletter: {
+      subject: '3 boAt audio deals under ₹1,100 (prices checked)',
+      preheader: 'Airdopes Alpha vs Rockerz 255 Pro+ vs BassHeads 104',
+      body: `Hi,\n\nScoutly checked three boAt audio deals on the official India store:\n\n• Airdopes Alpha — ₹799 (best-value wireless)\n• Rockerz 255 Pro+ — ₹1,099 (neckband, long playback)\n• BassHeads 104 — ₹349 (wired, lowest cost)\n\nPrices and variants can change — verify on the live store before buying.\n\nRead the comparison: ${links.newsletter}\n\n${note}\n\n— Scoutly`
+    },
+    communityAngles: [
+      {
+        id: 'community-1',
+        prompt: 'Best boAt earbuds under ₹1,000?',
+        angle: 'Answer with use-case split, not a single winner.',
+        draft: `Under ₹1,100, Scoutly's checked shortlist is Airdopes Alpha (₹799 wireless), Rockerz 255 Pro+ (₹1,099 neckband) and BassHeads 104 (₹349 wired). Pick based on fit, battery and whether you need a headphone jack. Prices were checked on the official store — recheck before checkout. ${communityLink} ${note}`
+      }
+    ],
+    shortVideos: [
+      {
+        id: 'video-1',
+        title: '₹799 vs ₹1,099 vs ₹349 — which boAt deal fits you?',
+        hook: 'Fast comparison for impulse buyers.',
+        script: `Hook: "Three boAt deals under ₹1,100 — but only one fits your routine."\nBeat 1: Airdopes Alpha ₹799 — wireless, best value\nBeat 2: Rockerz 255 Pro+ ₹1,099 — neckband, longer battery\nBeat 3: BassHeads 104 ₹349 — wired, cheapest\nCTA: "Match the exact variant, then recheck the live price."\n${videoLink}\n${note}`
+      },
+      {
+        id: 'video-2',
+        title: 'Checked price ≠ final price',
+        hook: 'Trust-building disclaimer for deal content.',
+        script: `Scoutly checked these boAt prices on the official store on 14 Aug 2026. Stock, coupons and delivery can change the total. Always verify before checkout. ${videoLink}\n${note}`
+      }
+    ]
+  };
+}
+
+export function buildDrafts(analysis, links) {
+  if (analysis.monetization?.type === 'earnkaro_brand_store' || analysis.slug.includes('boat-audio')) {
+    return buildBoatDrafts(analysis, links);
+  }
+  return buildAmbraneDrafts(analysis, links);
 }
 
 export function buildSchedule(drafts) {
@@ -231,6 +321,8 @@ export function renderCampaignMarkdown({ analysis, links, drafts, schedule, meas
     `- **Guide URL:** ${analysis.guideUrl}`,
     analysis.affiliateUrl ? `- **Affiliate product URL:** ${analysis.affiliateUrl}` : '',
     `- **Publishing:** blocked until explicit approval (\`publishApproved: ${approval.publishApproved}\`)`,
+    analysis.platformChoice ? `- **Platform priority (${analysis.platformChoice.source}):** primary **${analysis.platformChoice.primary}**, secondary **${analysis.platformChoice.secondary}**` : '',
+    analysis.platformChoice ? `- **Selection note:** ${analysis.platformChoice.note}` : '',
     '',
     '## Analysis',
     '',
@@ -272,9 +364,9 @@ export function renderCampaignMarkdown({ analysis, links, drafts, schedule, meas
     push(`### ${video.id} — ${video.title}`, '', `**Hook:** ${video.hook}`, '', '```text', video.script, '```', '');
   });
 
-  push('## Seven-day schedule', '', '| Day | Channel | Asset | Measure |', '|---|---|---|---|');
+  push('## Seven-day schedule', '', '| Day | Priority | Channel | Asset | Measure |', '|---|---|---|---|---|');
   schedule.forEach((row) => {
-    push(`| ${row.day} | ${row.channel} | ${row.asset} | ${row.kpi} |`);
+    push(`| ${row.day} | ${row.priority || '—'} | ${row.channel} | ${row.asset} | ${row.kpi} |`);
   });
 
   push('', '## Measurement plan', '', `**Primary KPI:** ${measurement.primaryKpi}`, '', '**Targets**', ...Object.entries(measurement.targets).map(([key, value]) => `- ${key}: ${value}`), '', '**Tracking**', ...measurement.tracking.map((item) => `- ${item}`), '', '**Stop rules**', ...measurement.stopRules.map((item) => `- ${item}`), '', '## Experiment', '', `**Hypothesis:** ${experiment.selected.hypothesis}`, `**Success threshold:** ${experiment.successThreshold}`, '', '**Alternatives**', ...experiment.alternatives.map((alt) => `- ${alt.name}: ${alt.hypothesis}`), '', '## Risks and stop/pause recommendation', '', `- ${experiment.pauseRecommendation}`, '- Never invent live prices, rankings, or hands-on testing claims.', '- Do not post duplicate replies across communities.', '- Keep affiliate disclosure adjacent to any CTA.', '', '## Approval checklist', '', '- [ ] User explicitly approves publishing', '- [ ] Live Amazon.in price and seller re-verified', '- [ ] Guide disclosure visible near affiliate CTA', '- [ ] Analytics can distinguish each UTM source', '- [ ] Platform/date/post limits confirmed', '', '## Results log', '');
@@ -291,7 +383,9 @@ export function renderCampaignMarkdown({ analysis, links, drafts, schedule, meas
 export function createCampaignPackage(analysis) {
   const links = buildCampaignLinks({ guideUrl: analysis.guideUrl, campaign: analysis.slug });
   const drafts = buildDrafts(analysis, links);
-  const schedule = buildSchedule(drafts);
+  const schedule = analysis.platformChoice
+    ? buildPrioritySchedule(drafts, analysis.platformChoice)
+    : buildSchedule(drafts);
   const measurement = buildMeasurementPlan(analysis);
   return { links, drafts, schedule, measurement };
 }
