@@ -1,0 +1,91 @@
+# Blocker instructions
+
+The agent can generate and review campaigns locally. These steps are only needed when you want live analytics, scheduled runs, or external publishing.
+
+## 1. Choose the destination and schedule
+
+Decide:
+
+- Blog production URL (the Vercel URL or GitHub Pages URL)
+- Campaign schedule, for example daily at 09:00 Asia/Kolkata
+- Whether publishing requires your approval every time
+
+Tell Codex those three values in one message.
+
+## 2. Add analytics
+
+Choose one:
+
+- Google Analytics 4: provide a read-only property/data-stream connection or export a CSV/JSON report into `promotion-agent/metrics/`.
+- Plausible: provide the site domain and a read-only API token through the secret manager.
+
+Never paste an API token into chat, Git, Markdown, or `config.example.json`.
+
+The minimum fields needed are:
+
+```json
+{
+  "period": "2026-08-14",
+  "source": "linkedin",
+  "qualified_visits": 0,
+  "engaged_sessions": 0,
+  "affiliate_clicks": 0,
+  "email_signups": 0,
+  "conversions": 0
+}
+```
+
+## 3. Add the email provider
+
+The daily automation is active, but it will remain report-only until an email provider is connected. Choose one provider and provide its official API/MCP integration:
+
+- Resend
+- Mailgun
+- SendGrid
+- Amazon SES
+- Another provider with a documented sending API
+
+Then provide, through the secret manager only:
+
+1. API key or SMTP credential.
+2. Verified sender email/domain.
+3. Audience/list identifier.
+4. Bounce and unsubscribe webhook, if supported.
+5. Daily and weekly send limits.
+
+The first email campaign should remain limited to one useful email per week until ROI, bounce rate, unsubscribe rate, and conversion attribution are verified.
+
+## 4. Add publishing accounts one at a time
+
+Start with one channel, preferably LinkedIn or a newsletter. For each channel provide:
+
+1. The official API/MCP integration name.
+2. A secret stored in the platform's secret manager.
+3. The account/page identity to use.
+4. Daily and weekly limits.
+5. Whether drafts may be sent automatically or must wait for approval.
+
+Do not grant broad account access just to test draft generation. Draft generation works without publishing permissions.
+
+## 5. Activate recurring runs
+
+In Codex, create a recurring task using `promotion-agent/codex-automation-prompt.md`. Set the schedule and repository access, then keep the first runs in report-only mode.
+
+Expected first-run report:
+
+- New article detected
+- Campaign output path
+- Claims requiring verification
+- Drafts and UTM links
+- Metrics available or missing
+- Exact approval needed
+
+## 6. Move from drafts to publishing
+
+Only after at least two reviewed campaigns:
+
+- Connect one publishing channel.
+- Keep `autoPublish` false.
+- Approve one scheduled post manually.
+- Confirm the published URL and analytics attribution.
+- Increase volume only when qualified traffic or conversions improve.

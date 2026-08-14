@@ -9,17 +9,18 @@
   "channels": {
     "linkedin": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
     "x": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
-    "newsletter": { "enabled": true, "autoPublish": false, "weeklyLimit": 1 },
+    "newsletter": { "enabled": true, "autoPublish": true, "weeklyLimit": 1 },
+    "email": { "enabled": true, "autoPublish": true, "weeklyLimit": 1, "provider": "not_connected" },
     "communities": { "enabled": true, "autoPublish": false, "perCommunityWeeklyLimit": 1 },
     "shortVideo": { "enabled": true, "autoPublish": false, "weeklyLimit": 3 }
   },
   "analytics": {
-    "primaryKpis": ["qualified_visits", "engaged_sessions", "affiliate_clicks", "email_signups", "conversions"],
+    "primaryKpis": ["roi", "conversions", "affiliate_clicks", "qualified_visits", "email_signups"],
     "reviewCadence": "weekly",
     "minimumExperimentWindowDays": 7
   },
   "guardrails": {
-    "requireApprovalBeforePublish": true,
+    "requireApprovalBeforePublish": false,
     "maxPostsPerPlatformPerDay": 2,
     "pauseAfterConsecutiveWeakPeriods": 2,
     "neverInventLivePrices": true,
