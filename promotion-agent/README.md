@@ -1,7 +1,8 @@
 # Scoutly promotion agent
 
-This folder is the operating layer for a Cursor Agent or Cursor Automation that promotes Scoutly articles while keeping campaigns evidence-first and draft-first.
+Evidence-first, draft-first campaign workflow for Scoutly blog and guide promotion.
 
+## Quick start
 ## Run locally with Codex
 
 The MVP is a dependency-free Node CLI. It analyzes an HTML or Markdown article and writes a reviewable campaign file with platform drafts, UTM links, a schedule, an experiment, and guardrails.
@@ -34,33 +35,82 @@ If a live integration is blocked, follow [BLOCKERS.md](BLOCKERS.md) and provide 
 
 ## Start in Cursor
 
-Open this repository in Cursor and ask Agent:
+```bash
+# Detect new marketing briefs or published guides
+node promotion-agent/run-campaign.mjs detect
 
-```text
-Read .cursor/rules/blog-promotion-agent.mdc, promotion-agent/config.example.json,
-TRAFFIC-PLAYBOOK.md, and the relevant file in marketing/.
+# Run the first campaign from the Ambrane brief
+node promotion-agent/run-campaign.mjs run --post marketing/ambrane-charge-r65-launch.md
 
-Create the first seven-day promotion campaign for the strongest existing article.
-Use the Ambrane Charge R65 campaign if it is still the current priority.
-Write every draft and the schedule to promotion-agent/output/.
-Do not publish or call an external messaging API. Report missing credentials and
-the exact approval needed before any external action.
+# Review metrics and experiment recommendations
+node promotion-agent/run-campaign.mjs status --campaign ambrane-charge-r65
+
+# Append a weekly review snapshot
+node promotion-agent/run-campaign.mjs record --campaign ambrane-charge-r65 --json '{"qualified_visits":12,"engaged_sessions":5,"affiliate_clicks":1,"impressions":40}'
+
+# Publishing is blocked until you explicitly approve
+node promotion-agent/run-campaign.mjs publish-check --campaign ambrane-charge-r65 --platform linkedin
 ```
+
+## Operating rules
+
+Read these before every run:
+
+- `.cursor/rules/blog-promotion-agent.mdc`
+- `TRAFFIC-PLAYBOOK.md`
+- `promotion-agent/config.json`
+
+## Workflow (9 steps)
+
+1. **Detect or accept a post** — `detect` scans `marketing/` and `docs/guides/`; `run --post` accepts a specific brief or guide.
+2. **Analyze audience, intent, claims, CTA** — extracted automatically into the campaign output.
+3. **Generate platform drafts** — LinkedIn (3), X (5), newsletter, community (3), short-video (3), plus thread and carousel outlines.
+4. **Add UTM links** — per-channel links with `utm_campaign=<slug>`.
+5. **Save campaign** — dated Markdown file in `promotion-agent/output/`.
+6. **Seven-day schedule** — included in each campaign file.
+7. **Track results** — `promotion-agent/metrics/campaigns.json` via `record`.
+8. **Recommend experiments** — `status` compares review periods and suggests the next hook test.
+9. **Approval gate** — `promotion-agent/approvals/<slug>.json` keeps `publishApproved: false` until you explicitly approve.
 
 ## What must be connected before publishing
 
 - A supported social or email API/MCP integration
-- Analytics access (GA4, Plausible, or equivalent)
-- A destination URL and approved UTM naming convention
-- A review/approval step
-- Platform-specific daily limits
+- Analytics access (GA4, Plausible, Vercel Analytics, or equivalent)
+- Amazon Associates reporting for `scoutlyprice2-21`
+- Explicit human approval per campaign and platform
 
-Keep tokens in Cursor's secret/environment-variable storage. Never commit them to this repository or put them in `config.example.json`.
+Keep tokens in Cursor secrets. Never commit credentials to this repository.
 
 ## Campaign output
 
-The agent should create one dated Markdown file per run in `promotion-agent/output/`, containing drafts, links, schedule, claims requiring verification, and measurement results.
+Each run creates one dated file in `promotion-agent/output/` containing:
+
+- Campaign summary and primary KPI
+- Platform-specific drafts (not copy-pasted across channels)
+- UTM links
+- Seven-day schedule
+- Measurement plan
+- Experiment recommendation
+- Risks, verification checklist, and stop/pause guidance
 
 ## Recommended first campaign
 
-Use `marketing/ambrane-charge-r65-launch.md`. The existing `TRAFFIC-PLAYBOOK.md` already contains disclosure, anti-spam, and price-claim rules that the agent must follow.
+`marketing/ambrane-charge-r65-launch.md` → `promotion-agent/output/2026-08-14-ambrane-charge-r65.md`
+
+## Safety defaults
+
+- `requireApprovalBeforePublish: true`
+- `autoPublish: false` on every channel
+- No invented live prices
+- No duplicate community replies
+- No artificial engagement
+
+## Start in Cursor Agent
+
+```text
+Read .cursor/rules/blog-promotion-agent.mdc, promotion-agent/config.json,
+TRAFFIC-PLAYBOOK.md, and marketing/ambrane-charge-r65-launch.md.
+
+Run node promotion-agent/run-campaign.mjs run --post marketing/ambrane-charge-r65-launch.md
+Review the output in promotion-agent/output/ and wait for my approval before publishing.
+```
