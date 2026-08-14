@@ -10,12 +10,13 @@
     "linkedin": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
     "x": { "enabled": true, "autoPublish": false, "dailyLimit": 2 },
     "newsletter": { "enabled": true, "autoPublish": true, "weeklyLimit": 1 },
-    "email": { "enabled": true, "autoPublish": true, "weeklyLimit": 1, "provider": "not_connected" },
+    "email": { "enabled": true, "autoPublish": true, "weeklyLimit": 1, "provider": "amazon_ses", "listId": "not_connected" },
     "communities": { "enabled": true, "autoPublish": false, "perCommunityWeeklyLimit": 1 },
     "shortVideo": { "enabled": true, "autoPublish": false, "weeklyLimit": 3 }
   },
   "analytics": {
     "primaryKpis": ["roi", "conversions", "affiliate_clicks", "qualified_visits", "email_signups"],
+    "searchChannel": "google_search",
     "reviewCadence": "weekly",
     "minimumExperimentWindowDays": 7
   },

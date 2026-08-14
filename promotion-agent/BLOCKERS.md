@@ -37,13 +37,7 @@ The minimum fields needed are:
 
 ## 3. Add the email provider
 
-The daily automation is active, but it will remain report-only until an email provider is connected. Choose one provider and provide its official API/MCP integration:
-
-- Resend
-- Mailgun
-- SendGrid
-- Amazon SES
-- Another provider with a documented sending API
+The daily automation is active, but it will remain report-only until Amazon SES is connected.
 
 Then provide, through the secret manager only:
 
@@ -53,17 +47,23 @@ Then provide, through the secret manager only:
 4. Bounce and unsubscribe webhook, if supported.
 5. Daily and weekly send limits.
 
+For SES specifically, create a contact list with a topic such as `Scoutly newsletter`,
+verify the sending domain in the same AWS Region, request production access if the
+account is still in the sandbox, and provide the SES Region plus the contact-list
+name/ID. SES requires a verified identity before sending; sandbox accounts can send
+only to verified recipients.
+
 The first email campaign should remain limited to one useful email per week until ROI, bounce rate, unsubscribe rate, and conversion attribution are verified.
 
 ## 4. Add publishing accounts one at a time
 
-Start with one channel, preferably LinkedIn or a newsletter. For each channel provide:
+Start with the Amazon SES email channel. For each channel provide:
 
 1. The official API/MCP integration name.
 2. A secret stored in the platform's secret manager.
 3. The account/page identity to use.
 4. Daily and weekly limits.
-5. Whether drafts may be sent automatically or must wait for approval.
+5. Whether drafts may be sent automatically or must wait for approval. Your current policy is automatic sending after SES is configured.
 
 Do not grant broad account access just to test draft generation. Draft generation works without publishing permissions.
 
@@ -85,7 +85,7 @@ Expected first-run report:
 Only after at least two reviewed campaigns:
 
 - Connect one publishing channel.
-- Keep `autoPublish` false.
-- Approve one scheduled post manually.
+- Keep the initial email limit at one campaign per week.
+- Send one controlled campaign and verify attribution, bounces, and unsubscribes.
 - Confirm the published URL and analytics attribution.
 - Increase volume only when qualified traffic or conversions improve.
