@@ -27,7 +27,11 @@ function credentials() {
 function oauthHeader(method, url, creds) {
   const parsed = new URL(url);
   const oauth = { oauth_consumer_key: creds.consumerKey, oauth_nonce: randomBytes(16).toString('hex'), oauth_signature_method: 'HMAC-SHA1', oauth_timestamp: Math.floor(Date.now() / 1000), oauth_token: creds.token, oauth_version: '1.0' };
-  const pairs = [...parsed.searchParams.entries(), ...Object.entries(oauth)].sort(([a, av], [b, bv]) => encode(a).localeCompare(encode(b)) || encode(av).localeCompare(encode(bv)));
+  const pairs = [...parsed.searchParams.entries(), ...Object.entries(oauth)].sort(([a, av], [b, bv]) => {
+    const left = `${encode(a)}=${encode(av)}`;
+    const right = `${encode(b)}=${encode(bv)}`;
+    return left < right ? -1 : left > right ? 1 : 0;
+  });
   const normalized = pairs.map(([key, value]) => `${encode(key)}=${encode(value)}`).join('&');
   const base = [method.toUpperCase(), encode(`${parsed.origin}${parsed.pathname}`), encode(normalized)].join('&');
   const signingKey = `${encode(creds.consumerSecret)}&${encode(creds.tokenSecret)}`;
@@ -39,11 +43,12 @@ function oauthHeader(method, url, creds) {
 export async function getCurrentUser() {
   await loadLocalEnv();
   const creds = credentials();
-  const url = 'https://api.x.com/2/users/me';
+  const url = 'https://api.x.com/1.1/account/verify_credentials.json';
   const response = await fetch(url, { headers: { Authorization: oauthHeader('GET', url, creds) } });
   const body = await response.text();
   if (!response.ok) throw new Error(`X identity check failed (${response.status}): ${body.slice(0, 300)}`);
-  return JSON.parse(body).data;
+  const user = JSON.parse(body);
+  return { id: user.id_str, name: user.name, username: user.screen_name };
 }
 
 export async function postTweet(text) {
