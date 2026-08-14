@@ -4,6 +4,10 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$root"
 
+if [[ ! -f .env ]]; then
+  cp .env.example .env
+fi
+
 wait_for_url() {
   local url="$1"
   local attempts="${2:-30}"
