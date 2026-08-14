@@ -2,6 +2,36 @@
 
 This folder is the operating layer for a Cursor Agent or Cursor Automation that promotes Scoutly articles while keeping campaigns evidence-first and draft-first.
 
+## Run locally with Codex
+
+The MVP is a dependency-free Node CLI. It analyzes an HTML or Markdown article and writes a reviewable campaign file with platform drafts, UTM links, a schedule, an experiment, and guardrails.
+
+```bash
+node promotion-agent/cli.mjs generate \
+  --input docs/guides/ambrane-charge-r65-65w-gan-charger-india.html \
+  --slug ambrane-charge-r65
+```
+
+Scan the existing blog and identify articles without a matching campaign:
+
+```bash
+node promotion-agent/cli.mjs scan
+```
+
+Review campaign results by placing exported metrics in the same shape as `metrics.example.json`:
+
+```bash
+node promotion-agent/cli.mjs review --input promotion-agent/metrics.example.json
+```
+
+The CLI never publishes externally. Publishing should be added only after the corresponding platform API/MCP integration, secret, rate limit, and approval rule are configured.
+
+## Run repeatedly with Codex
+
+Use [codex-automation-prompt.md](codex-automation-prompt.md) as the instruction for a recurring Codex task. The prompt makes each run idempotent at the campaign-output level, asks for metrics-based improvement, and keeps external publishing disabled until integrations and approval rules are ready.
+
+If a live integration is blocked, follow [BLOCKERS.md](BLOCKERS.md) and provide only the specific account, schedule, or secret needed for that step.
+
 ## Start in Cursor
 
 Open this repository in Cursor and ask Agent:
